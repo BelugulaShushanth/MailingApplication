@@ -18,7 +18,7 @@ public class MailService {
 
     private final Logger logger = LoggerFactory.getLogger(MailService.class);
 
-    public ResponseEntity<String> sendMail(MailBean mailBean){
+    public ResponseEntity<String> sendMail(MailBean mailBean) throws Exception{
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("noreply@cricfizz.com");
         mailMessage.setTo(mailBean.getToMailId());
@@ -30,9 +30,8 @@ public class MailService {
             return ResponseEntity.ok("Mail Sent Successfully To "+mailBean.getToMailId());
         }
         catch (Exception e){
-            logger.error("Unable To Send Mail To: Exception:{}",mailBean.getToMailId(),e);
-            return new ResponseEntity<>("Unable To Send Mail To "+mailBean.getToMailId()+" please retry again", HttpStatus.BAD_REQUEST);
+            logger.error("Unable To Send Mail To: Exception:{} {}",mailBean.getToMailId(),e.getMessage());
+            throw new Exception("Unable To Send Mail To: "+mailBean.getToMailId()+"  please retry again");
         }
-
     }
 }
