@@ -23,6 +23,7 @@ public class MailController {
 
     @PostMapping("/sendMail")
     @Retry(name = "send-mail", fallbackMethod = "handleFallBack")
+    @CircuitBreaker(name = "send-mail", fallbackMethod = "handleFallBack")
     public ResponseEntity<String> sendMail(@RequestBody MailBean mailBean) throws Exception{
         logger.info("Incoming Request: {}",mailBean.getToMailId());
         return mailService.sendMail(mailBean);
