@@ -3,6 +3,7 @@ package com.mailingApplication.controller;
 import com.mailingApplication.bean.MailBean;
 import com.mailingApplication.service.MailService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class MailController {
     @PostMapping("/sendMail")
     @Retry(name = "send-mail", fallbackMethod = "handleFallBack")
     @CircuitBreaker(name = "send-mail", fallbackMethod = "handleFallBack")
+    @RateLimiter(name = "send-mail")
     public ResponseEntity<String> sendMail(@RequestBody MailBean mailBean) throws Exception{
         logger.info("Incoming Request: {}",mailBean.getToMailId());
         return mailService.sendMail(mailBean);
