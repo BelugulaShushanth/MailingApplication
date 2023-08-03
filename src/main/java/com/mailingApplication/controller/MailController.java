@@ -29,7 +29,7 @@ public class MailController {
     @RateLimiter(name = "send-mail")
     @Bulkhead(name = "send-mail")
     public ResponseEntity<String> sendMail(@RequestBody MailBean mailBean) throws Exception{
-        logger.info("Incoming Request: {}",mailBean.getToMailId());
+        logger.info("Incoming Request Send Mail: {}",mailBean.getToMailId());
         return mailService.sendMail(mailBean);
     }
 

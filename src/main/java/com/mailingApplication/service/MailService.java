@@ -8,7 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
 
 @Service
 public class MailService {
@@ -19,13 +23,14 @@ public class MailService {
     private final Logger logger = LoggerFactory.getLogger(MailService.class);
 
     public ResponseEntity<String> sendMail(MailBean mailBean) throws Exception{
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("noreply@cricfizz.com");
-        mailMessage.setTo(mailBean.getToMailId());
-        mailMessage.setSubject(mailBean.getSubject());
-        mailMessage.setText(mailBean.getBody());
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
+        messageHelper.setFrom("noreply@cricfizz.com");
+        messageHelper.setTo(mailBean.getToMailId());
+        messageHelper.setSubject(mailBean.getSubject());
+        messageHelper.setText(mailBean.getBody(),true);
         try {
-            javaMailSender.send(mailMessage);
+            javaMailSender.send(mimeMessage);
             logger.info("Mail Sent Successfully TO: {}",mailBean.getToMailId());
             return ResponseEntity.ok("Mail Sent Successfully To "+mailBean.getToMailId());
         }
